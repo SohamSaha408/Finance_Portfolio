@@ -1,0 +1,12 @@
+fastapi
+uvicorn
+requests
+google-generativeai
+pydantic
+python-multipart
+yfinance
+fredapi
+python-dotenv
+
+
+# Add other dependencies from original project if needed
