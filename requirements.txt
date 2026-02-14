@@ -7,6 +7,8 @@ python-multipart
 yfinance
 fredapi
 python-dotenv
+aiofiles
+
 
 
 # Add other dependencies from original project if needed

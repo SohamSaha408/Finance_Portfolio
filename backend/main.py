@@ -1,6 +1,8 @@
 from fastapi import FastAPI, HTTPException, Body
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.staticfiles import StaticFiles
 from pydantic import BaseModel
+
 import sqlite3
 import os
 import requests
@@ -118,7 +120,10 @@ def get_fred_data(series_id: str = "UNRATE", api_key: str = None):
     except:
         return []
 
-if __name__ == "__main__":
     import uvicorn
     uvicorn.run(app, host="0.0.0.0", port=8000)
+
+# Serve Frontend (Must be last to avoid overriding API routes)
+app.mount("/", StaticFiles(directory="frontend", html=True), name="static")
+
 

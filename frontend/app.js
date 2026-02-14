@@ -1,4 +1,5 @@
-const API_URL = "http://localhost:8000";
+const API_URL = ""; // Relative path for production
+
 
 // Navigation
 function showSection(sectionId) {
