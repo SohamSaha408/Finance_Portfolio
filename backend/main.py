@@ -41,9 +41,10 @@ class RecommendationRequest(BaseModel):
 
 # --- Endpoints ---
 
-@app.get("/")
+@app.get("/api/health")
 def read_root():
-    return {"message": "Finance AI API is running"}
+    return {"status": "Finance AI API is running"}
+
 
 @app.post("/api/recommendation")
 def get_recommendation(req: RecommendationRequest):
@@ -120,8 +121,10 @@ def get_fred_data(series_id: str = "UNRATE", api_key: str = None):
     except:
         return []
 
+if __name__ == "__main__":
     import uvicorn
     uvicorn.run(app, host="0.0.0.0", port=8000)
+
 
 # Serve Frontend (Must be last to avoid overriding API routes)
 app.mount("/", StaticFiles(directory="frontend", html=True), name="static")
