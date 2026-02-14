@@ -10,7 +10,8 @@ import yfinance as yf
 from fredapi import Fred
 from datetime import datetime, timedelta
 from dotenv import load_dotenv
-from .advisor import get_rule_based_recommendation, generate_ai_recommendation, search_funds, init_recommendations_db
+from .advisor import get_rule_based_recommendation, generate_ai_recommendation, search_funds, get_fund_history, init_recommendations_db
+
 
 # Load environment variables from .env file
 load_dotenv()
@@ -64,6 +65,11 @@ def get_recommendation(req: RecommendationRequest):
 @app.get("/api/funds/search")
 def search_mutual_funds(q: str):
     return search_funds(q)
+
+@app.get("/api/funds/{scheme_code}")
+def get_mutual_fund_history(scheme_code: str):
+    return get_fund_history(scheme_code)
+
 
 @app.get("/api/news")
 def get_financial_news(q: str = "finance", api_key: str = None):

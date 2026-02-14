@@ -99,13 +99,71 @@ async function searchFunds() {
             const div = document.createElement('div');
             div.className = "fund-item glass";
             div.style.marginTop = "10px";
-            div.innerHTML = `<strong>${fund.schemeName}</strong><br><small>Code: ${fund.schemeCode}</small>`;
+            div.innerHTML = `
+                <div style="display:flex; justify-content:space-between; align-items:center;">
+                    <div>
+                        <strong>${fund.schemeName}</strong><br><small>Code: ${fund.schemeCode}</small>
+                    </div>
+                    <button onclick="loadFundHistory('${fund.schemeCode}', '${fund.schemeName.replace(/'/g, "\\'")}')" class="btn-primary" style="font-size:0.8rem; padding:5px 10px;">View Chart</button>
+                </div>
+            `;
             container.appendChild(div);
         });
     } catch (err) {
         console.error("Fund search failed:", err);
     }
 }
+
+let fundChart = null;
+async function loadFundHistory(schemeCode, schemeName) {
+    try {
+        const res = await fetch(`${API_URL}/api/funds/${schemeCode}`);
+        const data = await res.json();
+
+        if (!data || data.length === 0) {
+            alert("No historical data available for this fund.");
+            return;
+        }
+
+        // Reverse data to show oldest to newest
+        const chartData = data.reverse();
+
+        const ctx = document.getElementById('fundChart').getContext('2d');
+        if (fundChart) fundChart.destroy();
+
+        fundChart = new Chart(ctx, {
+            type: 'line',
+            data: {
+                labels: chartData.map(d => d.date),
+                datasets: [{
+                    label: `NAV: ${schemeName}`,
+                    data: chartData.map(d => d.nav),
+                    borderColor: '#00d4ff',
+                    backgroundColor: 'rgba(0, 212, 255, 0.1)',
+                    fill: true,
+                    tension: 0.4,
+                    pointRadius: 2
+                }]
+            },
+            options: {
+                responsive: true,
+                interaction: { intersect: false, mode: 'index' },
+                scales: {
+                    x: { ticks: { color: 'white' } },
+                    y: { ticks: { color: 'white' } }
+                },
+                plugins: { legend: { labels: { color: 'white' } } }
+            }
+        });
+
+        // Scroll to chart
+        document.getElementById('fundChart').scrollIntoView({ behavior: 'smooth' });
+
+    } catch (err) {
+        console.error("Fund history failed:", err);
+    }
+}
+
 
 // Market Trends
 let marketChart = null;

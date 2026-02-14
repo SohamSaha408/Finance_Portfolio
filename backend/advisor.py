@@ -96,3 +96,20 @@ def search_funds(query):
         return []
     except:
         return []
+
+def get_fund_history(scheme_code):
+    """Fetches historical NAV data for a mutual fund."""
+    url = f"https://api.mfapi.in/mf/{scheme_code}"
+    try:
+        response = requests.get(url)
+        if response.status_code == 200:
+            data = response.json()
+            # Extract NAV history
+            nav_data = data.get("data", [])
+            # Return list of {date, nav}
+            return [{"date": d["date"], "nav": float(d["nav"])} for d in nav_data[:30]] # Last 30 entries for speed/chart
+    except Exception as e:
+        print(f"Error fetching fund history: {e}")
+        return []
+    return []
+
